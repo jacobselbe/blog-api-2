@@ -1,18 +1,12 @@
 const express = require('express');
 const morgan = require('morgan');
-const jsonParser = require('body-parser').json();
-const {BlogPosts} = require('./models');
-// const router = express.Router(); //uncomment if modularized
 const app = express();
+const blogPostsRouter = require('./blogPostsRouter');
 
 app.use(morgan('common'));
 
-app.get();
+app.use('/blog-posts', blogPostsRouter);
 
-app.post();
-
-app.put();
-
-app.delete();
-
-app.listen();
+app.listen(process.env.PORT || 8080, () => {
+    console.log(`Your app is listening on port ${process.env.PORT || 8080}`);
+});
