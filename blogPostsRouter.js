@@ -54,6 +54,15 @@ router.put('/', jsonParser, (req, res) => {
     }
 });
 
-// router.delete();
+router.delete('/:id', (req, res) => {
+    if (BlogPosts.get(req.params.id) !== undefined) {
+        BlogPosts.delete(req.params.id);
+        res.status(204).end()
+    } else {
+        const message = `Cannot delete item '${req.params.id}' does not exist`;
+        console.log(message);
+        res.status(400).send(message);
+    }
+});
 
 module.exports = router;
