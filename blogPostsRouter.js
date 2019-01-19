@@ -21,9 +21,38 @@ router.get('/', (req, res) => {
     res.json(BlogPosts.get());
 });
 
-// router.post();
+router.post('/', jsonParser, (req, res) => {
+    const reqFields = ['title', 'content', 'author'];
+    for (let i = 0; i < reqFields.length; i++) {
+        if (!(reqFields[i] in req.body)) {
+            const message = `Error: '${reqFields[i]}' field required in request body`;
+            console.log(message);
+            res.status(400).send(message);
+        }
+    }
+    const item =
+        'publishDate' in req.body ?
+            BlogPosts.create(req.body.title, req.body.content, req.body.author, req.body.publishDate) :
+            BlogPosts.create(req.body.title, req.body.content, req.body.author);
+    res.status(201).json(BlogPosts.get(item.id));
+});
 
-// router.put();
+router.put('/', jsonParser, (req, res) => {
+    if ("id" in req.body) {
+        if (BlogPosts.get(req.body.id) !== undefined) {
+            const updatedPost = BlogPosts.update(req.body);
+            res.status(200).json(updatedPost);
+        } else {
+            const message = `Can't update item '${req.body.id}' because doesn't exist`
+            console.log(message);
+            res.status(400).send(message);
+        }
+    } else {
+        const message = `Required field "id" not provided in request body`
+        console.log(message);
+        res.status(400).send(message);
+    }
+});
 
 // router.delete();
 
