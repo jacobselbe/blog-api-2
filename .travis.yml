@@ -4,6 +4,6 @@ deploy:
   provider: heroku
   api_key:
     secure: JEgwlSQL83JqvP03a09qFbgPX4vnI2Zi3L0VDUuRgfGITgXFJJbEujAwQ8CL6kxkEvrik1Sja+humAyY0+EEP5cvjLn2eE0NYy+PDsKU5E/Snah7WvbIU5WJd8N5PQjbRBMy0xcGW+wttQ5g9jbbRljiRZwV3enrwm8MPvaLXdAt/zwtOcX2KAqIgvLLrBdS3XVucQ172L1I0VwxFmgVUG+VrgGeGESUrscVZMadWdRI9lpJp+xrvkwMQwq5xVaS/mD6DDpMJS7AOZhzJbK+8bdss3yCguTN1017x599daklgdwDHtauVekI99+Dy9qJ7bkXoUwE2qyh2nz+49O0yMP/XaaJOAhcPioya/ipIoEqyfa8p3KYVVA0EewnH2oyYufbKWu3Pvrp/78bIC+kWyArbKSqxREJtrQTbXUhSTmxnhlgulwhr19xXQX/83droQQSm/ebNQc9McDOwws2TeC167FCQHmqDi5Bli7l92vXTXoKYrOcMUbyQxvu9FbaZ4VX6+DTWL8L9tKtxqJwW49G9Kgl6S3ru8liBwMKEH8+QXVtPculWZfe5XSW5BZQINtuwBSKOGwX5IWDvW0BfDJjflbzcH39Bk5fMHbl4XpMeUZotcUx2fN2VZoMQ1bJoNQf+wAXyMutIWykC5bMtEe0I6PDeYocSHWZeOAmiiA=
-  app: blog-api
+  app: whispering-basin-74482
   on:
     repo: jacobselbe/blog-api
