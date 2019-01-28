@@ -2,7 +2,6 @@
 
 const express = require('express');
 const morgan = require('morgan');
-const jsonParser = require('body-parser').json();
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 const { PORT, DATABASE_URL } = require('./config');
@@ -18,11 +17,30 @@ app.get("/", (req, res) => {
     res.sendFile(__dirname + "/views/index.html");
 });
 
-app.get('/', (req, res) => {
-    res.json(Post.get());
+app.get('/blog-posts', (req, res) => {
+    Post.find()
+        .then(posts => {
+            res.json({
+                posts: posts.map(post => post.serialize())
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({message: 'Internal erver error'});
+        });
 });
 
-app.post('/', jsonParser, (req, res) => {
+app.get('/blog-posts/:id', (req, res) => {
+    Post
+        .findById(req.params.id)
+        .then(post => res.json(post.serialize()))
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({message: 'Internal server error'});
+        });
+});
+
+app.post('/blog-posts', (req, res) => {
     const reqFields = ['title', 'content', 'author'];
     for (let i = 0; i < reqFields.length; i++) {
         if (!(reqFields[i] in req.body)) {
@@ -31,11 +49,18 @@ app.post('/', jsonParser, (req, res) => {
             res.status(400).send(message);
         }
     }
-    const item =
-        'publishDate' in req.body ?
-            Post.create(req.body.title, req.body.content, req.body.author, req.body.publishDate) :
-            Post.create(req.body.title, req.body.content, req.body.author);
-    res.status(201).json(Post.get(item.id));
+    Post
+        .create({
+            title: req.body.title,
+            content: req.body.content,
+            author: req.body.author,
+            publishDate: Date.now()
+        })
+        .then(post => res.status(201).json(post.serialize()))
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({message: 'Internal server error'});
+        });
 });
 
 app.put('/', jsonParser, (req, res) => {
