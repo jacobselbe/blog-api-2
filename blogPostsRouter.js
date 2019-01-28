@@ -1,10 +1,3 @@
-const express = require('express');
-const router = express.Router();
-
-const jsonParser = require('body-parser').json();
-
-const {BlogPosts} = require('./models');
-
 const loremContent = [
     'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Necessitatibus, dolorem. Cumque quaerat saepe fuga atque ad error. Recusandae perspiciatis doloremque accusantium. Inventore sint quasi nam quos tempore voluptates explicabo delectus repudiandae, magni quaerat mollitia, molestias in quas deleniti rerum suscipit, dignissimos qui architecto consectetur recusandae maxime sunt ipsum exercitationem. Illum inventore neque suscipit provident nesciunt doloribus, sint facere reiciendis repudiandae iusto exercitationem, porro eos adipisci saepe delectus alias. Est commodi laboriosam eos. Dolor amet error fuga mollitia quos aspernatur et.',
 
@@ -16,53 +9,3 @@ const loremContent = [
 BlogPosts.create('Morning Run', loremContent[0], 'Jacob Selbe');
 BlogPosts.create('Evening Run', loremContent[1], 'Frank Furt');
 BlogPosts.create('Weekend Run', loremContent[2], 'Joe Johnson');
-
-router.get('/', (req, res) => {
-    res.json(BlogPosts.get());
-});
-
-router.post('/', jsonParser, (req, res) => {
-    const reqFields = ['title', 'content', 'author'];
-    for (let i = 0; i < reqFields.length; i++) {
-        if (!(reqFields[i] in req.body)) {
-            const message = `Error: '${reqFields[i]}' field required in request body`;
-            console.log(message);
-            res.status(400).send(message);
-        }
-    }
-    const item =
-        'publishDate' in req.body ?
-            BlogPosts.create(req.body.title, req.body.content, req.body.author, req.body.publishDate) :
-            BlogPosts.create(req.body.title, req.body.content, req.body.author);
-    res.status(201).json(BlogPosts.get(item.id));
-});
-
-router.put('/', jsonParser, (req, res) => {
-    if ("id" in req.body) {
-        if (BlogPosts.get(req.body.id) !== undefined) {
-            const updatedPost = BlogPosts.update(req.body);
-            res.status(200).json(updatedPost);
-        } else {
-            const message = `Can't update item '${req.body.id}' because doesn't exist`
-            console.log(message);
-            res.status(400).send(message);
-        }
-    } else {
-        const message = `Required field "id" not provided in request body`
-        console.log(message);
-        res.status(400).send(message);
-    }
-});
-
-router.delete('/:id', (req, res) => {
-    if (BlogPosts.get(req.params.id) !== undefined) {
-        BlogPosts.delete(req.params.id);
-        res.status(204).end()
-    } else {
-        const message = `Cannot delete item '${req.params.id}' does not exist`;
-        console.log(message);
-        res.status(400).send(message);
-    }
-});
-
-module.exports = router;
