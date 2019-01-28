@@ -5,8 +5,8 @@ const morgan = require('morgan');
 const jsonParser = require('body-parser').json();
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-const {PORT, DATABASE_URL} = require('./config');
-const { BlogPosts } = require('./models');
+const { PORT, DATABASE_URL } = require('./config');
+const { Post } = require('./models');
 
 const app = express();
 app.use(express.json());
@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    res.json(BlogPosts.get());
+    res.json(Post.get());
 });
 
 app.post('/', jsonParser, (req, res) => {
@@ -33,15 +33,15 @@ app.post('/', jsonParser, (req, res) => {
     }
     const item =
         'publishDate' in req.body ?
-            BlogPosts.create(req.body.title, req.body.content, req.body.author, req.body.publishDate) :
-            BlogPosts.create(req.body.title, req.body.content, req.body.author);
-    res.status(201).json(BlogPosts.get(item.id));
+            Post.create(req.body.title, req.body.content, req.body.author, req.body.publishDate) :
+            Post.create(req.body.title, req.body.content, req.body.author);
+    res.status(201).json(Post.get(item.id));
 });
 
 app.put('/', jsonParser, (req, res) => {
     if ("id" in req.body) {
-        if (BlogPosts.get(req.body.id) !== undefined) {
-            const updatedPost = BlogPosts.update(req.body);
+        if (Post.get(req.body.id) !== undefined) {
+            const updatedPost = Post.update(req.body);
             res.status(200).json(updatedPost);
         } else {
             const message = `Can't update item '${req.body.id}' because doesn't exist`
@@ -56,8 +56,8 @@ app.put('/', jsonParser, (req, res) => {
 });
 
 app.delete('/:id', (req, res) => {
-    if (BlogPosts.get(req.params.id) !== undefined) {
-        BlogPosts.delete(req.params.id);
+    if (Post.get(req.params.id) !== undefined) {
+        Post.delete(req.params.id);
         res.status(204).end()
     } else {
         const message = `Cannot delete item '${req.params.id}' does not exist`;
