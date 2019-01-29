@@ -63,32 +63,36 @@ app.post('/blog-posts', (req, res) => {
         });
 });
 
-app.put('/', jsonParser, (req, res) => {
-    if ("id" in req.body) {
-        if (Post.get(req.body.id) !== undefined) {
-            const updatedPost = Post.update(req.body);
-            res.status(200).json(updatedPost);
-        } else {
-            const message = `Can't update item '${req.body.id}' because doesn't exist`
-            console.log(message);
-            res.status(400).send(message);
-        }
-    } else {
-        const message = `Required field "id" not provided in request body`
-        console.log(message);
-        res.status(400).send(message);
+app.put('/blog-posts/:id', (req, res) => {
+    if (!(req.params.id && req.body.id && req.params.id === req.body.id)) {
+        const message =
+            `Request path id (${req.params.id}) and request body id ` +
+            `(${req.body.id}) must match`;
+        console.error(message);
+        return res.status(400).json({ message: message });
     }
+    const toUpdate = {};
+    const updateableFields = ['title', 'content', 'author'];
+
+    updateableFields.forEach(field => {
+        if (field in req.body) {
+            toUpdate[field] = req.body[field];
+        }
+    });
+    Post
+        .findByIdAndUpdate(req.params.id, { $set: toUpdate })
+        .then(post => res.status(204).end())
+        .catch(err => res.status(500).json({ message: "Internal server error" }));
 });
 
-app.delete('/:id', (req, res) => {
-    if (Post.get(req.params.id) !== undefined) {
-        Post.delete(req.params.id);
-        res.status(204).end()
-    } else {
-        const message = `Cannot delete item '${req.params.id}' does not exist`;
-        console.log(message);
-        res.status(400).send(message);
-    }
+app.delete('/blog-posts/:id', (req, res) => {
+    Post.findByIdAndRemove(req.params.id)
+        .then(post => res.status(204).end())
+        .catch(err => res.status(500).json({ message: "Internal server error" }));
+});
+
+app.use("*", function (req, res) {
+    res.status(404).json({ message: "Not Found" });
 });
 
 let server;
