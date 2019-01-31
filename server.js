@@ -11,6 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(morgan('common'));
 app.use(express.static("public"));
+app.use('/blog-posts');
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/views/index.html");
