@@ -11,7 +11,6 @@ const app = express();
 app.use(express.json());
 app.use(morgan('common'));
 app.use(express.static("public"));
-app.use('/blog-posts');
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/views/index.html");
@@ -97,7 +96,7 @@ app.use("*", function (req, res) {
 
 let server;
 
-function runServer(DATABASE_URL, PORT = PORT) {
+function runServer(DATABASE_URL, port = PORT) {
     return new Promise((resolve, reject) => {
         mongoose.connect(DATABASE_URL, err => {
             if (err) {
